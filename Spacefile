@@ -1,0 +1,24 @@
+v: 0
+app_name: "flutter_test"
+micros:
+  - name: web
+    src: .
+    commands:
+      - apt update
+      - apt install unzip wget go-md2man systemd pkg-config -y
+      - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+      - apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
+      - apt update
+      - apt install cmake -y
+      - add-apt-repository -y ppa:projectatomic/ppa
+      - apt update
+      - apt install podman -y
+      - pip3 install meson ninja
+      - export PATH=~/.local/bin:$PATH
+      - wget https://github.com/containers/toolbox/releases/download/0.0.99.2/toolbox-0.0.99.2.tar.xz && tar -xf toolbox-0.0.99.2.tar.xz && cd toolbox-0.0.99.2 && meson setup -Dprofile_dir=/etc/profile.d builddir && meson compile -C builddir && meson install -C builddir
+      - toolbox create -i docker.io/jamesbelchamber/flutter-toolbx
+      - toolbox enter flutter-toolbx
+      - flutter build web
+    serve: build/web
+    engine: static
+    primary: true
